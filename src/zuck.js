@@ -742,15 +742,15 @@
           //Previous and next button click event
           modalSlider.addEventListener('click', function(e) {
             if(e.target.className == 'story-right') {
-                zuck.navigateItem('next', event);
+                // zuck.navigateItem('next', event);
             }
             if(e.target.className == 'story-left') {
-              if(zuck.data[zuck.internalData.currentStory].currentItem == 0) {
-                moveStoryItem();
-              }else {
-                zuck.navigateItem('previous', event);
-                zuck.internalData["currentVideoElement"].currentTime = 0;
-              }
+              // if(zuck.data[zuck.internalData.currentStory].currentItem == 0) {
+              //   moveStoryItem();
+              // }else {
+                // zuck.navigateItem('previous', event);
+                // zuck.internalData["currentVideoElement"].currentTime = 0;
+              // }
             }
           });
 
