@@ -200,7 +200,7 @@
         stories: [],
         backButton: true,
         arrowControl: true, //Previous and Next buttons to be visible
-        // navText: [], //Required for left and right arrow icons, can take two values
+        navText: ['←', '→'], //Required for left and right arrow icons, can take two values
         mouseDrag: true,
         backNative: false,
         previousTap: false,
@@ -233,7 +233,7 @@
         template: {
           timelineItem (itemData) {
             return `
-              ${get(itemData,"photo")? '' : `<div class="row">`}
+              ${get(itemData,"photo")? '' : ``}
               <div class="story ${get(itemData, 'seen') === true ? 'seen' : ''}">
                 <a class="item-link" href="${get(itemData, 'link')}">
                   ${get(itemData,"photo")?
@@ -250,7 +250,7 @@
                 </a>
                 <ul class="items"></ul>
               </div>
-              ${get(itemData,"photo") ? '' : `</div>`}`;
+              ${get(itemData,"photo") ? '' : ``}`;
           },
 
           timelineStoryItem (itemData) {
@@ -348,7 +348,6 @@
                           READ MORE <i class="fas fa-arrow-right"></i>
                           </a>
                           <div class="list-inline">
-                            <span class="inputbro" id="inputbro">${get(item, 'link')}</span>
                             <ul class="list-inline">}
                               <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'link')}" class="tip whatsapp" target="_blank"> <i class="fab fa-whatsapp"></i></a></li>
                               <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'link')}" class="tip telegram" target="_blank"> <i class="fa fa-paper-plane"></i></a></li>
@@ -661,7 +660,6 @@
             };
           });
 
-
             modalSlider.addEventListener('click', function(e) {
             if(e.target.className == 'tip copy') { 
                 var copyText = d.getElementById("inputbro");
@@ -747,7 +745,7 @@
             delta = {};
 
             if (enableMouseEvents) {
-               if(event.button==0) {
+              if(event.button==0) {
               modalSlider.addEventListener('mousemove', touchMove);
               modalSlider.addEventListener('mouseup', touchEnd);
               modalSlider.addEventListener('mouseleave', touchEnd);
@@ -1061,6 +1059,10 @@
 
       var parseStory = function parseStory(story) {
         var storyId = story.getAttribute('data-id');
+        var tag = story.getAttribute('tag');
+        var post_type = story.getAttribute('post_type');
+        var linkhref = story.getAttribute('link');
+        var browse = story.getAttribute('browse');
         var seen = false;
 
         if (zuck.internalData['seenItems'][storyId]) {
@@ -1089,10 +1091,18 @@
           };
         }
 
-        story.onclick = function (e) {
+        if (browse =='yes' && (tag !=='' || post_type !=='')) {
+          story.onclick = function (e) {
+          e.preventDefault();
+          window.open(linkhref, '_blank');
+          }
+        }
+        else {
+          story.onclick = function (e) {
           e.preventDefault();
           modal.show(storyId);
-        };
+          };
+        }
       };
 
       var getStoryMorningGlory = function getStoryMorningGlory(what) {
@@ -1216,8 +1226,8 @@
       zuck.internalData = {};
       zuck.internalData['seenItems'] = getLocalData('seenItems') || {};
       
-      // var navText = option('navText');
-      // d.querySelectorAll('#'+id)[0].innerHTML += '<div class="story-prev story-nav">' + navText[0] + '</div>' + '<div class="story-next story-nav">' + navText[1] + '</div>';
+      var navText = option('navText');
+      d.querySelectorAll('#'+id)[0].innerHTML += '<div class="story-prev story-nav" ><i class="fas fa-chevron-circle-left circle-icon"></i></div>' + '<div class="story-next story-nav"><i class="fas fa-chevron-circle-right circle-icon"></i></div>';
 
       zuck.add = zuck.update = function (data, append) {
         var storyId = get(data, 'id');
@@ -1246,6 +1256,10 @@
         story.setAttribute('data-id', storyId);
         story.setAttribute('data-photo', get(data, 'photo'));
         story.setAttribute('data-last-updated', get(data, 'lastUpdated'));
+        story.setAttribute('tag', get(data, 'tag'));
+        story.setAttribute('post_type', get(data, 'post_type'));
+        story.setAttribute('link', get(data, 'link'));
+        story.setAttribute('browse', get(data, 'browse'));
         var preview = false;
 
         if (items[0]) {
@@ -1272,22 +1286,100 @@
           // updateStoryseenPosition();
         }
 
-        if(option("mouseDrag")) {
+
+        // // scroll to left
+        // $(rightPaddle).on('click', function() {
+        //   $('.menu').animate( { scrollLeft: menuInvisibleSize}, scrollDuration);
+        // });
+
+        // // scroll to right
+        // $(leftPaddle).on('click', function() {
+        //   $('.menu').animate( { scrollLeft: '0' }, scrollDuration);
+        // });
+
+        // if(option("mouseDrag")) {
           var StoriesSlider = d.querySelector('#'+id),
-              isDown = false,
-              startX = void 0,
-              scrollLeft = void 0;
-          
-          //StoriesSlider.classList.add('deneme');
+          isDown = false,
+          startX = void 0,  
+          scrollLeft = void 0;
+
+          // StoriesSlider.classList.add('deneme');
 
           if(StoriesSlider !== null) {
+              StoriesSlider.addEventListener('click', function(e) {
+                if(e.target.className == 'story-prev story-nav') { 
+                  e.preventDefault();
+                  sideScroll(StoriesSlider,'left',25,100,10);
+                  scrollAmount = 0;
+                  function sideScroll(element,direction,speed,distance,step){
+                    scrollAmount = 0;
+                    var slideTimer = setInterval(function(){
+                        if(direction == 'left'){
+                            element.scrollLeft -= step;
+                            StoriesSlider.querySelector(".story-prev").style.position = "fixed";
+                            StoriesSlider.querySelector(".story-next").style.position = "fixed";
+                        } else {
+                            element.scrollLeft += step;
+                            StoriesSlider.querySelector(".story-prev").style.position = "fixed";
+                            StoriesSlider.querySelector(".story-next").style.position = "fixed";
+                        }
+                        scrollAmount += step;
+                        if(scrollAmount >= distance){
+                            window.clearInterval(slideTimer);
+                        }
+                    }, speed);
+                  }
+                }
+              });
+
+              StoriesSlider.addEventListener('click', function(e) {
+                if(e.target.className == 'story-next story-nav') { 
+                   e.preventDefault();
+                  sideScroll(StoriesSlider,'right',25,100,10);
+                  scrollAmount = 0;
+                  function sideScroll(element,direction,speed,distance,step){
+                    scrollAmount = 0;
+                    var slideTimer = setInterval(function(){
+                        if(direction == 'left'){
+                            element.scrollLeft -= step;
+                            StoriesSlider.querySelector(".story-prev").style.position = "fixed";
+                            StoriesSlider.querySelector(".story-next").style.position = "fixed";
+                        } else {
+                            element.scrollLeft += step;
+                            StoriesSlider.querySelector(".story-prev").style.position = "fixed";
+                            StoriesSlider.querySelector(".story-next").style.position = "fixed";
+                        }
+                        scrollAmount += step;
+                        if(scrollAmount >= distance){
+                            window.clearInterval(slideTimer);
+                        }
+                    }, speed);
+                  }
+                }
+              });
+              var previousScroll = 0;    
+              window.addEventListener('scroll', function(e) {
+                var supportPageOffset = window.pageXOffset !== undefined;
+                var isCSS1Compat = ((d.compatMode || "") === "CSS1Compat");
+                var x = d.body.scrollLeft;
+                var y = d.body.scrollTop;    
+
+                StoriesSlider.querySelector(".story-prev").style.position = "absolute";
+                StoriesSlider.querySelector(".story-next").style.position = "absolute";
+                previousScroll = y;
+
+              });
+            
+
               StoriesSlider.addEventListener('mousedown', function (e) {
+                if(e.button==0) {
                   isDown = true;
                   setTimeout(function(){
                       StoriesSlider.classList.add('scrolling');
                   },100);
                   startX = e.pageX - StoriesSlider.offsetLeft;
                   scrollLeft = StoriesSlider.scrollLeft;
+                }
               });
 
               StoriesSlider.addEventListener('mouseleave', function () {
@@ -1308,7 +1400,7 @@
                   StoriesSlider.scrollLeft = scrollLeft - walk;
               });
           }
-        }
+        // }
       };
 
       zuck.next = function () {
