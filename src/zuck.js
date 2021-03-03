@@ -323,8 +323,8 @@
                     data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}"
                     class="item ${get(item, 'seen') === true ? 'seen' : ''} ${currentIndex === index ? 'active' : ''}">
 
-                    ${option("arrowControl")?`<div class="story-left" title="Previous Story" style="background-image: url(/wp-content/themes/dailyvanity-child/src/images/previous_button.png); width=45px; height=45px;  background-repeat: no-repeat;"></div>`:''}
-                    ${option("arrowControl")?`<div class="story-right" title="Next Story" style="background-image: url(/wp-content/themes/dailyvanity-child/src/images/next_button.png); width=45px; height=45px;  background-repeat: no-repeat;"></div>`:''}
+                    ${option("arrowControl")?`<div class="story-left" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/prev_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>`:''}
+                    ${option("arrowControl")?`<div class="story-right" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/next_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>`:''}
                    
                     ${
                       get(item, 'type') === 'video'
@@ -1094,12 +1094,14 @@
         if (browse =='yes' && (tag !=='' || post_type !=='')) {
           story.onclick = function (e) {
           e.preventDefault();
+          // alert("a");
           window.open(linkhref, '_blank');
           }
         }
         else {
           story.onclick = function (e) {
           e.preventDefault();
+          // alert("b");
           modal.show(storyId);
           };
         }
@@ -1227,7 +1229,14 @@
       zuck.internalData['seenItems'] = getLocalData('seenItems') || {};
       
       var navText = option('navText');
-      d.querySelectorAll('#'+id)[0].innerHTML += '<div class="story-prev story-nav" ><i class="fas fa-chevron-circle-left circle-icon"></i></div>' + '<div class="story-next story-nav"><i class="fas fa-chevron-circle-right circle-icon"></i></div>';
+      if (id=='igstoryafter')
+      {
+         d.querySelectorAll('#'+id)[0].innerHTML += '<div class="story-prev story-nav" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/prev_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>' + '<div class="story-next story-nav" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/next_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>';
+      }
+      else
+      {
+         d.querySelectorAll('#'+id)[0].innerHTML += '<div class="story-prevs story-nav" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/prev_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>' + '<div class="story-nexts story-nav" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/next_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>';
+      }    
 
       zuck.add = zuck.update = function (data, append) {
         var storyId = get(data, 'id');
@@ -1304,7 +1313,6 @@
           scrollLeft = void 0;
 
           // StoriesSlider.classList.add('deneme');
-
           if(StoriesSlider !== null) {
               StoriesSlider.addEventListener('click', function(e) {
                 if(e.target.className == 'story-prev story-nav') { 
@@ -1357,19 +1365,100 @@
                   }
                 }
               });
-              var previousScroll = 0;    
-              window.addEventListener('scroll', function(e) {
-                var supportPageOffset = window.pageXOffset !== undefined;
-                var isCSS1Compat = ((d.compatMode || "") === "CSS1Compat");
-                var x = d.body.scrollLeft;
-                var y = d.body.scrollTop;    
 
-                StoriesSlider.querySelector(".story-prev").style.position = "absolute";
-                StoriesSlider.querySelector(".story-next").style.position = "absolute";
-                previousScroll = y;
-
+              StoriesSlider.addEventListener('click', function(e) {
+                if(e.target.className == 'story-prevs story-nav') { 
+                  e.preventDefault();
+                  sideScroll(StoriesSlider,'left',25,100,10);
+                  scrollAmount = 0;
+                  function sideScroll(element,direction,speed,distance,step){
+                    scrollAmount = 0;
+                    var slideTimer = setInterval(function(){
+                        if(direction == 'left'){
+                            element.scrollLeft -= step;
+                            StoriesSlider.querySelector(".story-prevs").style.position = "fixed";
+                            StoriesSlider.querySelector(".story-nexts").style.position = "fixed";
+                        } else {
+                            element.scrollLeft += step;
+                            StoriesSlider.querySelector(".story-prevs").style.position = "fixed";
+                            StoriesSlider.querySelector(".story-nexts").style.position = "fixed";
+                        }
+                        scrollAmount += step;
+                        if(scrollAmount >= distance){
+                            window.clearInterval(slideTimer);
+                        }
+                    }, speed);
+                  }
+                }
               });
-            
+
+              StoriesSlider.addEventListener('click', function(e) {
+                if(e.target.className == 'story-nexts story-nav') { 
+                   e.preventDefault();
+                  sideScroll(StoriesSlider,'right',25,100,10);
+                  scrollAmount = 0;
+                  function sideScroll(element,direction,speed,distance,step){
+                    scrollAmount = 0;
+                    var slideTimer = setInterval(function(){
+                        if(direction == 'left'){
+                            element.scrollLeft -= step;
+                            StoriesSlider.querySelector(".story-prevs").style.position = "fixed";
+                            StoriesSlider.querySelector(".story-nexts").style.position = "fixed";
+                        } else {
+                            element.scrollLeft += step;
+                            StoriesSlider.querySelector(".story-prevs").style.position = "fixed";
+                            StoriesSlider.querySelector(".story-nexts").style.position = "fixed";
+                        }
+                        scrollAmount += step;
+                        if(scrollAmount >= distance){
+                            window.clearInterval(slideTimer);
+                        }
+                    }, speed);
+                  }
+                }
+              });
+
+              var scrollPos = 0;
+              const mq = window.matchMedia( "(max-width: 480px)" );
+              window.addEventListener('scroll', function(e) {
+                if (mq.matches) {
+                  if ((document.body.getBoundingClientRect()).top == scrollPos) 
+                  {
+                    document.querySelector(".story-prev").style.position = "fixed";
+                    document.querySelector(".story-next").style.position = "fixed";
+                    document.querySelector(".story-prev").style.display = "inline";
+                    document.querySelector(".story-next").style.display = "inline";
+                    document.querySelector(".story-prevs").style.display = "inline";
+                    document.querySelector(".story-nexts").style.display = "inline";
+                  }
+                  else {
+                    document.querySelector(".story-prev").style.position = "absolute";
+                    document.querySelector(".story-next").style.position = "absolute";
+                    document.querySelector(".story-prev").style.display = "none !important";
+                    document.querySelector(".story-next").style.display = "none !important";
+                    document.querySelector(".story-prevs").style.display = "none !important";
+                    document.querySelector(".story-nexts").style.display = "none !important";
+                  }
+                  // scrollPos = (document.body.getBoundingClientRect()).top;
+                }
+              });
+
+              var scrollPosStories = 0;
+              var divx = document.querySelector("#main-menu-container");
+              divx.addEventListener('scroll', function (e) {
+                if (mq.matches) {
+                  if (divx.scrollTop == scrollPosStories)
+                  {
+                    document.querySelector(".story-prevs").style.display = "inline";
+                    document.querySelector(".story-nexts").style.display = "inline";
+                  }
+                  else {
+                    document.querySelector(".story-prevs").style.display = "none";
+                    document.querySelector(".story-nexts").style.display = "none";
+                  }
+                  // scrollPosStories = (divx.getBoundingClientRect()).top;
+                }
+              });
 
               StoriesSlider.addEventListener('mousedown', function (e) {
                 if(e.button==0) {
