@@ -315,8 +315,6 @@
                       <div class="slides-pointers">
                         <div class="wrap"></div>
                       </div>
-                      
-                       
                     </div>`;
           },
 
@@ -364,6 +362,7 @@
                           READ MORE <i class="fas fa-arrow-right"></i>
                           </a>
                           <div class="list-inline">
+                            <input type="text" class="inputbro" id="inputbro" value="${get(item, 'link')}" autofocus="autofocus" onfocus="this.select()" size=50>
                             <ul class="list-inline">}
                               <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'link')}" class="tip whatsapp" target="_blank"> <i class="fab fa-whatsapp"></i></a></li>
                               <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'link')}" class="tip telegram" target="_blank"> <i class="fa fa-paper-plane"></i></a></li>
@@ -681,17 +680,17 @@
             };
           });
 
-          storyViewer.addEventListener('click', function(e) {
-            if(e.target.className == 'tip copy') { 
-                var copyText = d.getElementById("inputbro");
-                var textArea = d.createElement("textarea");
-                textArea.value = copyText.textContent;
-                d.body.appendChild(textArea);
-                textArea.select();
-                d.execCommand("Copy");
-                textArea.remove();
-                // alert("copied");
-            }
+          var x, i;
+          x = document.querySelectorAll("#inputbro");
+          each(document.querySelectorAll("#copied"), (i, el) => {
+            el.onclick = e => {
+              e.preventDefault();
+              for (i = 0; i < x.length; i++) {
+                x[i].select();
+                document.execCommand("copy");
+                document.querySelectorAll("#copied").innerHTML = "Copied";
+              }
+            };
           });
 
           storyViewer.appendChild(slides);
@@ -795,6 +794,10 @@
             // pauseVideoItem();
             timer = setTimeout(function () {
               storyViewer.classList.add('longPress');
+              storyViewer.classList.add('paused');
+              storyViewer.querySelector(".paused_story").style.display = "none";
+              storyViewer.querySelector(".play_story").style.display = "inline-block";
+              storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
             }, 600);
             nextTimer = setTimeout(function () {
               clearInterval(nextTimer);
