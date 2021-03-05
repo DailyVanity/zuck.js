@@ -315,8 +315,8 @@
                       <div class="slides-pointers">
                         <div class="wrap"></div>
                       </div>
-
-                      <div class="storyline"></div>
+                      
+                       
                     </div>`;
           },
 
@@ -328,17 +328,21 @@
                     </span>`;
           },
 
-          viewerItemBody (index, currentIndex, item) {
+          viewerItemBody (index, currentIndex, item, active) {
             
             let link = `${get(item, 'link')}`;
-             return `<div
-                    data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}"
-                    class="item ${get(item, 'seen') === true ? 'seen' : ''} ${currentIndex === index ? 'active' : ''}">
-
-                    ${option("arrowControl")?`<div class="story-left" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/prev_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>`:''}
-                    ${option("arrowControl")?`<div class="story-right" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/next_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>`:''}
-                   
-                    ${
+            return `<div class="storyline"></div>
+                  <div
+                  data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}"
+                  class="item ${get(item, 'seen') === true ? 'seen' : ''} ${currentIndex === index ? 'active' : ''}">
+                  
+                  ${option("arrowControl")?`<div class="story-left" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/prev_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>`:''}
+                  ${option("arrowControl")?`<div class="story-right" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/next_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>`:''}
+                  
+                  ${get(item, 'linkText') === 'View All' ?
+                    `<div class="storylinefull" style="background-image:url(${get(item, 'src')});background-repeat: no-repeat center center fixed;-webkit-background-size: cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"><a href="${get(item, 'link')}" target="_blank"><span class="linkSpanner"></span></a></div>`
+                  :
+                    `${
                       get(item, 'type') === 'video'
                       ? `<video class="media" muted webkit-playsinline playsinline preload="auto" src="${get(item, 'src')}" ${get(item, 'type')}></video>
                         <b class="tip muted">${option('language', 'unmute')}</b>`
@@ -346,7 +350,7 @@
                     }
 
                     ${
-                      get(item, 'numberchild')
+                      get(item, 'numberchild')!==''
                       ? `<div class="tip numberchild">${get(item, 'numberchild')}</div>`
                       : ''
                     }
@@ -367,8 +371,9 @@
                               <li class="list-inline-item"><a class="tip copy" id="copied">COPY LINK</a></li>
                             </ul>
                           </div>`: ''
-                    }
-                  </div>`;
+                    }`
+                  }
+                </div>`;
           }
         },
         language: {
@@ -576,9 +581,13 @@
               item['seen'] = true;
             }
 
+            if (currentItem === i) {
+              active = 'active';
+            }
             var itemId = get(item, 'id');
             var length = get(item, 'length');
             var linkText = get(item, 'linkText');
+            var numberchild = get(item, 'numberchild');
             // var seenClass = get(item, 'seen') === true ? 'seen' : '';
             // var commonAttrs = "data-index=\"".concat(i, "\" data-item-id=\"").concat(itemId, "\"");
             // var renderCallback = option('callbacks', 'onRender');
@@ -590,7 +599,8 @@
             // pointerItems += "\n                            <span ".concat(commonAttrs, " class=\"").concat(currentItem === i ? 'active' : '', " ").concat(seenClass, "\">\n                                <b style=\"animation-duration:").concat(length === '' ? '3' : length, "s\"></b>\n                            </span>");
             // htmlItems += "<div data-time=\"".concat(get(item, 'time'), "\" data-type=\"").concat(get(item, 'type'), "\"").concat(commonAttrs, " class=\"item ").concat(seenClass, " ").concat(currentItem === i ? 'active' : '', "\">\n                            ").concat(option("arrowControl") ? '<div class="story-left" title="Previous Story">&#8592;</div>' : "", "\n                            ").concat(renderCallback(item, "\n                              ".concat(get(item, 'type') === 'video' ? "\n                                    <video class=\"media\" muted webkit-playsinline playsinline preload=\"auto\" src=\"".concat(get(item, 'src'), "\" ").concat(get(item, 'type'), "></video>\n                                    <b class=\"tip muted\">").concat(option('language', 'unmute'), "</b>\n                              ") : "\n                                    <img class=\"media\" src=\"".concat(get(item, 'src'), "\" ").concat(get(item, 'type'), ">\n                              "), "\n\n                              ").concat(get(item, 'link') ? "\n                                    <a class=\"tip link\" href=\"".concat(get(item, 'link'), "\" rel=\"noopener\" target=\"_blank\">\n                                      ").concat(!linkText || linkText === '' ? option('language', 'visitLink') : linkText, "\n                                    </a>\n                              ") : "\n                              ", "\n                            ")), "\n                            ").concat(option("arrowControl") ? '<div class="story-right" title="Next Story">&#8594;</div>' : "", "\n                          </div>");
             pointerItems += option('template', 'viewerItemPointer')(i, currentItem, item);
-            htmlItems += option('template', 'viewerItemBody')(i, currentItem, item);
+            htmlItems += option('template', 'viewerItemBody')(i, currentItem, item, active);
+
           });
           slides.innerHTML = htmlItems;
            
