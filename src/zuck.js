@@ -467,6 +467,8 @@
             viewing: query('#zuck-modal .story-viewer.viewing')
           };
 
+          // document.querySelectorAll("#copied").innerHTML = "COPY LINK";
+
           if (!slideItems['previous'] && !direction || !slideItems['next'] && direction) {
             return false;
           }
@@ -552,7 +554,6 @@
               // if (items) {
               //   playVideoItem([items[0], items[1]], true);
               // }
-
               
               option('callbacks', 'onView')(zuck.internalData['currentStory']);
             }
@@ -680,16 +681,19 @@
             };
           });
 
-          var x, i;
+          var x, i, j;
           x = document.querySelectorAll("#inputbro");
+          y = document.querySelectorAll("#copied");
           each(document.querySelectorAll("#copied"), (i, el) => {
             el.onclick = e => {
               e.preventDefault();
+             for (j = 0; j < y.length; j++) { 
               for (i = 0; i < x.length; i++) {
                 x[i].select();
                 document.execCommand("copy");
-                document.querySelectorAll("#copied").innerHTML = "Copied";
               }
+               y[j].innerHTML = "COPIED";
+             }
             };
           });
 
@@ -1560,6 +1564,12 @@
         var nextPointer = nextItems[0];
         var nextItem = nextItems[1];
         
+        var j;
+        y = document.querySelectorAll("#copied");
+        for (j = 0; j < y.length; j++) { 
+          y[j].innerHTML = "COPY LINK";
+        };
+
         if (storyViewer && nextPointer && nextItem) {
           
           var navigateItemCallback = function navigateItemCallback() {
