@@ -338,7 +338,7 @@
                   ${option("arrowControl")?`<div class="story-right" style="background-image: url(https://s3-ap-southeast-1.amazonaws.com/uploads.dailyvanity.sg/wp-content/uploads/next_btn.png); background-repeat: no-repeat; background-size: 45px 45px;"></div>`:''}
                   
                   ${get(item, 'linkText') === 'View All' ?
-                    `<div class="storylinefull" style="background-image:url(${get(item, 'src')});background-repeat: no-repeat center center fixed;-webkit-background-size: cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover;"><a href="${get(item, 'link')}" target="_blank"><span class="linkSpanner"></span></a></div>`
+                    `<div class="storylinefull" style="background-image: url(${get(item, 'src')});"><a href="${get(item, 'link')}" target="_blank"><span class="linkSpanner"></span></a></div>`
                   :
                     `${
                       get(item, 'type') === 'video'
