@@ -468,7 +468,6 @@
           };
 
           // document.querySelectorAll("#copied").innerHTML = "COPY LINK";
-
           if (!slideItems['previous'] && !direction || !slideItems['next'] && direction) {
             return false;
           }
@@ -497,6 +496,7 @@
           translate(modalSlider, transform, transitionTime, null);
           setTimeout(function () {  
             if (target !== '' && slideItems[target] && useless !== '') {
+              
               var currentStory = slideItems[target].getAttribute('data-story-id');
               zuck.internalData['currentStory'] = currentStory;
               var oldStory = query("#zuck-modal .story-viewer.".concat(useless));
@@ -662,6 +662,7 @@
               e.preventDefault();
 
               storyViewer.classList.add("paused");
+              // alert("pausedclick");
               storyViewer.querySelector(".paused_story").style.display = "none";
               storyViewer.querySelector(".play_story").style.display = "inline-block";
               storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
@@ -674,6 +675,7 @@
               e.preventDefault();
 
               storyViewer.classList.remove("paused");
+              //  alert("playlick");
               storyViewer.querySelector(".paused_story").style.display = "inline-block";
               storyViewer.querySelector(".play_story").style.display = "none";
               storyViewer.querySelector(".paused_story").innerHTML = "<i id='zuckfa' class='far fa-pause-circle fa-2x' aria-hidden='true'></i> PAUSE";
@@ -714,15 +716,17 @@
           } else {
             modalSlider.appendChild(storyViewer);
           }
-          
+
           if (isClicked=="paused") {
-            storyViewer.classList.add('paused');
+            // alert("pauseda");
+            storyViewer.classList.add('paused');            
             storyViewer.querySelector(".paused_story").style.display = "none";
             storyViewer.querySelector(".play_story").style.display = "inline-block";
             storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
           }
           else
           {
+            //  alert("playa");
             storyViewer.classList.remove("paused");
             storyViewer.querySelector(".paused_story").style.display = "inline-block";
             storyViewer.querySelector(".play_story").style.display = "none";
@@ -740,15 +744,14 @@
           var delta = void 0;
           var timer = void 0;
           var nextTimer = void 0;
-          var nextTimer = void 0;
 
           var touchStart = function touchStart(event) {
             var storyViewer = query('#zuck-modal .viewing');
 
             if (event.target.nodeName === 'A') {
               return true;
-            // } else {
-            //   event.preventDefault();
+            } else {
+              event.preventDefault();
             }
 
             var touches = event.touches ? event.touches[0] : event;
@@ -787,8 +790,8 @@
 
             if (storyViewer) {
               if(event.button==0) {
-              // alert("check");
               storyViewer.classList.add('paused');
+              //  alert("check");
               storyViewer.querySelector(".paused_story").style.display = "none";
               storyViewer.querySelector(".play_story").style.display = "inline-block";
               storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
@@ -799,6 +802,7 @@
             timer = setTimeout(function () {
               storyViewer.classList.add('longPress');
               storyViewer.classList.add('paused');
+              //  alert("mbuh");
               storyViewer.querySelector(".paused_story").style.display = "none";
               storyViewer.querySelector(".play_story").style.display = "inline-block";
               storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
@@ -899,11 +903,13 @@
               storyViewer.classList.remove('longPress');
               if (isClicked=="paused") {
                 storyViewer.classList.add('paused');
+                // alert("longpress");
                 storyViewer.querySelector(".paused_story").style.display = "none";
                 storyViewer.querySelector(".play_story").style.display = "inline-block";
                 storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
               }
               else{
+                // alert("ucul");
                 storyViewer.classList.remove("paused");
                 storyViewer.querySelector(".paused_story").style.display = "inline-block";
                 storyViewer.querySelector(".play_story").style.display = "none";
@@ -1574,9 +1580,13 @@
           
           var navigateItemCallback = function navigateItemCallback() {
             if (direction === 'previous') {
+              // console.log("previous");
+              // alert("previous");
               currentPointer.classList.remove('seen');
               currentItemElement.classList.remove('seen');
             } else {
+              //  console.log("next");
+              //  alert("next");
               currentPointer.classList.add('seen');
               currentItemElement.classList.add('seen');
             }
@@ -1589,6 +1599,7 @@
             nextItem.classList.add('active');
             if (isClicked=="paused") {
               storyViewer.classList.add("paused");
+              // alert("dul");
               storyViewer.querySelector(".paused_story").style.display = "none";
               storyViewer.querySelector(".play_story").style.display = "inline-block";
               storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
@@ -1617,7 +1628,7 @@
       var init = function init() {
         if (query("#".concat(id, " .story"))) {
           each(timeline.querySelectorAll('.story'), function (i, story) {
-            alert("story true");
+            // alert("story true");
             parseStory(story, true);
           });
         }
