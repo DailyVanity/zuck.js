@@ -362,8 +362,8 @@
                           READ MORE <i class="fas fa-arrow-right"></i>
                           </a>
                           <div class="list-inline">
-                            <input type="text" class="inputbro" id="inputbro" value="${get(item, 'link')}" autofocus="autofocus" onfocus="this.select()" size=50>
-                            <ul class="list-inline">}
+                            <div id="inputbro" style="display: none;">${get(item, 'link')}</div>
+                            <ul class="list-inline">
                               <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'link')}" class="tip whatsapp" target="_blank"> <i class="fab fa-whatsapp"></i></a></li>
                               <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'link')}" class="tip telegram" target="_blank"> <i class="fa fa-paper-plane"></i></a></li>
                               <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${get(item, 'link')}" class="tip facebook" target="blank"> <i class="fab fa-facebook-f"></i></a></li>
@@ -467,7 +467,6 @@
             viewing: query('#zuck-modal .story-viewer.viewing')
           };
 
-          // document.querySelectorAll("#copied").innerHTML = "COPY LINK";
           if (!slideItems['previous'] && !direction || !slideItems['next'] && direction) {
             return false;
           }
@@ -683,19 +682,20 @@
             };
           });
 
-          var x, i, j;
-          x = document.querySelectorAll("#inputbro");
-          y = document.querySelectorAll("#copied");
+          var i,j; 
+          var copied = document.querySelectorAll("#copied");
+          var inputbro = document.querySelectorAll("#inputbro");
+
           each(document.querySelectorAll("#copied"), (i, el) => {
             el.onclick = e => {
               e.preventDefault();
-             for (j = 0; j < y.length; j++) { 
-              for (i = 0; i < x.length; i++) {
-                x[i].select();
-                document.execCommand("copy");
-              }
-               y[j].innerHTML = "COPIED";
-             }
+              var $tempInput = document.createElement('INPUT');
+              document.body.appendChild($tempInput);
+              $tempInput.setAttribute('value', inputbro[i].innerHTML);
+              $tempInput.select();
+              document.execCommand("copy");
+              document.body.removeChild($tempInput);
+              copied[i].innerHTML = "COPIED";
             };
           });
 
@@ -748,7 +748,7 @@
           var touchStart = function touchStart(event) {
             var storyViewer = query('#zuck-modal .viewing');
 
-            if (event.target.nodeName === 'A') {
+            if (event.target.nodeName === 'A' || event.target.nodeName == 'SPAN') {
               return true;
             } else {
               event.preventDefault();
@@ -924,18 +924,22 @@
             if (nextTimer) {
               clearInterval(nextTimer);
               nextTimer = false;
-
+              const mq = window.matchMedia( "(max-width: 480px)" );    
+              storylinefull = document.querySelectorAll(".linkSpanner");          
               var navigateItem = function navigateItem() {
-               if (lastTouchOffset.x > global.screen.width / 2) {
-                    zuck.navigateItem('next', event);
-                } else {
-                  if(zuck.data[zuck.internalData.currentStory].currentItem == 0) {
-                      moveStoryItem();
-                  }else {
-                    zuck.navigateItem('previous', event);
-                    // zuck.internalData["currentVideoElement"].currentTime = 0;
+                  if (lastTouchOffset.x > global.screen.width / 2) {
+                      //  alert("next");
+                      zuck.navigateItem('next', event);
+                  } else {
+                    if(zuck.data[zuck.internalData.currentStory].currentItem == 0) {
+                        // alert("moveStoryItem");
+                        moveStoryItem();
+                    }else {
+                      // alert("previous");
+                      zuck.navigateItem('previous', event);
+                      // zuck.internalData["currentVideoElement"].currentTime = 0;
+                    }
                   }
-                }
               };
 
               var storyViewerViewing = query('#zuck-modal .viewing');
