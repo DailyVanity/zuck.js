@@ -467,7 +467,6 @@
             viewing: query('#zuck-modal .story-viewer.viewing')
           };
 
-          // document.querySelectorAll("#copied").innerHTML = "COPY LINK";
           if (!slideItems['previous'] && !direction || !slideItems['next'] && direction) {
             return false;
           }
@@ -686,7 +685,7 @@
           var i,j; 
           var copied = document.querySelectorAll("#copied");
           var inputbro = document.querySelectorAll("#inputbro");
-      
+
           each(document.querySelectorAll("#copied"), (i, el) => {
             el.onclick = e => {
               e.preventDefault();
