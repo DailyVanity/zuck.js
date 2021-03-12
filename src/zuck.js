@@ -358,16 +358,16 @@
                       ? `<a class="tip link" href="${get(item, 'link')}" rel="noopener" target="_blank">
                             ${!get(item, 'linkText') || get(item, 'linkText') === '' ? option('language', 'visitLink') : get(item, 'linkText')}
                           </a>
-                          <a class="tip read-moreh read-more-btn-highlights inter-bold" href="${get(item, 'link')}" rel="noopener" target="_blank">
+                          <a class="tip read-more-btn-highlights inter-bold" href="${get(item, 'link')}" rel="noopener" target="_blank">
                           READ MORE <i class="fas fa-arrow-right"></i>
                           </a>
                           <div class="list-inline">
                             <div id="inputbro" style="display: none;">${get(item, 'link')}</div>
                             <ul class="list-inline">
-                              <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'link')}" class="tip whatsapp" target="_blank"> <i class="fab fa-whatsapp"></i></a></li>
-                              <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'link')}" class="tip telegram" target="_blank"> <i class="fa fa-paper-plane"></i></a></li>
-                              <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${get(item, 'link')}" class="tip facebook" target="blank"> <i class="fab fa-facebook-f"></i></a></li>
-                              <li class="list-inline-item"><a class="tip copy" id="copied">COPY LINK</a></li>
+                              <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'link')}" class="tip whatsapp poppins-medium" target="_blank"> <i class="fab fa-whatsapp fa-2x"></i></a></li>
+                              <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'link')}" class="tip telegram poppins-medium" target="_blank"> <i class="fa fa-paper-plane fa-2x"></i></a></li>
+                              <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${get(item, 'link')}" class="tip facebook poppins-medium" target="blank"> <i class="fab fa-facebook-f fa-2x"></i></a></li>
+                              <li class="list-inline-item"><a class="tip copy poppins-medium" id="copied">COPY LINK</a></li>
                             </ul>
                           </div>`: ''
                     }`
