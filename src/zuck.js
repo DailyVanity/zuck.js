@@ -326,9 +326,7 @@
                     </span>`;
           },
 
-          viewerItemBody (index, currentIndex, item, active) {
-            
-            let link = `${get(item, 'link')}`;
+          viewerItemBody (index, currentIndex, item, active, link, linkText) {
             return `<div class="storyline"></div>
                   <div
                   data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}"
@@ -349,18 +347,18 @@
 
                     ${
                       get(item, 'link')
-                      ? `<a class="tip link" href="${get(item, 'link')}" rel="noopener" target="_blank">
+                      ? `<a class="tip link" href="${link}" rel="noopener" target="_blank">
                           ${!get(item, 'linkText') || get(item, 'linkText') === '' ? option('language', 'visitLink') : get(item, 'linkText')}
                         </a>
-                        <a class="tip read-more-btn-highlights inter-bold" href="${get(item, 'link')}" rel="noopener" target="_blank">
+                        <a class="tip read-more-btn-highlights inter-bold" href="${link}" rel="noopener" target="_blank">
                         READ MORE <i class="fas fa-arrow-right"></i>
                         </a>
                         <div class="list-inline">
-                          <div id="inputbro" style="display: none;">${get(item, 'link')}</div>
+                          <div id="inputbro" style="display: none;">${link}</div>
                           <ul class="list-inline">
-                            <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'link')}" class="tip whatsapp poppins-medium" target="_blank"><i class="fab fa-whatsapp fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'link')}" class="tip telegram poppins-medium" target="_blank"><i class="fa fa-paper-plane fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${get(item, 'link')}" class="tip facebook poppins-medium" target="blank"><i class="fab fa-facebook-f fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${linkText}%20%7C%20${link}" class="tip whatsapp poppins-medium" target="_blank"><i class="fab fa-whatsapp fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${linkText}%20%7C%20${link}" class="tip telegram poppins-medium" target="_blank"><i class="fa fa-paper-plane fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${link}" class="tip facebook poppins-medium" target="blank"><i class="fab fa-facebook-f fa-2x"></i></a></li>
                             <li class="list-inline-item"><a class="tip copy poppins-medium" id="copied">COPY LINK</a></li>
                           </ul>
                         </div>`: ''
@@ -591,8 +589,10 @@
 
             // pointerItems += "\n                            <span ".concat(commonAttrs, " class=\"").concat(currentItem === i ? 'active' : '', " ").concat(seenClass, "\">\n                                <b style=\"animation-duration:").concat(length === '' ? '3' : length, "s\"></b>\n                            </span>");
             // htmlItems += "<div data-time=\"".concat(get(item, 'time'), "\" data-type=\"").concat(get(item, 'type'), "\"").concat(commonAttrs, " class=\"item ").concat(seenClass, " ").concat(currentItem === i ? 'active' : '', "\">\n                            ").concat(option("arrowControl") ? '<div class="story-left" title="Previous Story">&#8592;</div>' : "", "\n                            ").concat(renderCallback(item, "\n                              ".concat(get(item, 'type') === 'video' ? "\n                                    <video class=\"media\" muted webkit-playsinline playsinline preload=\"auto\" src=\"".concat(get(item, 'src'), "\" ").concat(get(item, 'type'), "></video>\n                                    <b class=\"tip muted\">").concat(option('language', 'unmute'), "</b>\n                              ") : "\n                                    <img class=\"media\" src=\"".concat(get(item, 'src'), "\" ").concat(get(item, 'type'), ">\n                              "), "\n\n                              ").concat(get(item, 'link') ? "\n                                    <a class=\"tip link\" href=\"".concat(get(item, 'link'), "\" rel=\"noopener\" target=\"_blank\">\n                                      ").concat(!linkText || linkText === '' ? option('language', 'visitLink') : linkText, "\n                                    </a>\n                              ") : "\n                              ", "\n                            ")), "\n                            ").concat(option("arrowControl") ? '<div class="story-right" title="Next Story">&#8594;</div>' : "", "\n                          </div>");
+            link = encodeURIComponent(get(item, 'link'));
+            linkText = encodeURIComponent(get(item, 'linkText'));
             pointerItems += option('template', 'viewerItemPointer')(i, currentItem, item);
-            htmlItems += option('template', 'viewerItemBody')(i, currentItem, item, active);
+            htmlItems += option('template', 'viewerItemBody')(i, currentItem, item, active, link, linkText);
           });
 
           slides.innerHTML = htmlItems;
@@ -675,7 +675,7 @@
               isClicked = "play";
             };
           });
-          
+
           var copied = slides.querySelectorAll("#copied");
           var inputbro = slides.querySelectorAll("#inputbro");
 
