@@ -677,7 +677,6 @@
           var copied = slides.querySelectorAll("#copied");
           var inputbro = slides.querySelectorAll("#inputbro");
           var script = document.createElement('script');
-          // script.src =  'http://newdesign.dailyvanity.sg/wp-content/themes/dailyvanity-child/src/js/test.js';
           script.src =  'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js';
           document.getElementsByTagName("head")[0].appendChild(script);
 
