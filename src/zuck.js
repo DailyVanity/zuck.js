@@ -690,7 +690,7 @@
           });
 
           clipboard.on('error', function(e) {
-            e.trigger.textContent = 'Press Ctrl + C to copy';
+            e.trigger.textContent = 'COPY LINK';
             window.setTimeout(function() {
               e.trigger.textContent = 'COPY LINK';
             }, 2000);
