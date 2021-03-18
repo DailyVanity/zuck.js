@@ -590,7 +590,7 @@
             link = encodeURIComponent(get(item, 'link'));
             linkText = encodeURIComponent(get(item, 'linkText'));
             pointerItems += option('template', 'viewerItemPointer')(i, currentItem, item);
-            htmlItems += option('template', 'viewerItemBody')(i, currentItem, item, active, link, );
+            htmlItems += option('template', 'viewerItemBody')(i, currentItem, item, active, link, linkText);
           });
 
           slides.innerHTML = htmlItems;
