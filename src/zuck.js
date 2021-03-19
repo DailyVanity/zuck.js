@@ -325,7 +325,7 @@
                     </span>`;
           },
 
-          viewerItemBody (index, currentIndex, item, active, link, linkText) {
+          viewerItemBody (index, currentIndex, item, active) {
             return `<div class="storyline"></div>
                   <div
                   data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}"
@@ -354,10 +354,10 @@
                         </a>
                         <div class="list-inline">
                           <ul class="list-inline">
-                            <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${linkText}%20%7C%20${link}" class="tip whatsapp poppins-medium" target="_blank"><i class="fab fa-whatsapp fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${linkText}%20%7C%20${link}" class="tip telegram poppins-medium" target="_blank"><i class="fa fa-paper-plane fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${link}" class="tip facebook poppins-medium" target="blank"><i class="fab fa-facebook-f fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a class="tip copy poppins-medium" id="copied" data-clipboard-text="${link}">COPY LINK</a></li>
+                            <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'linkText')}%20%7C%20${get(item, 'link')}" class="tip whatsapp poppins-medium" target="_blank"><i class="fab fa-whatsapp fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'linkText')}%20%7C%20${get(item, 'link')}" class="tip telegram poppins-medium" target="_blank"><i class="fa fa-paper-plane fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${get(item, 'link')}" class="tip facebook poppins-medium" target="blank"><i class="fab fa-facebook-f fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a class="tip copy poppins-medium" id="copied" data-clipboard-text="${get(item, 'link')}">COPY LINK</a></li>
                           </ul>
                         </div>`: ''
                     }`
@@ -587,10 +587,10 @@
 
             // pointerItems += "\n                            <span ".concat(commonAttrs, " class=\"").concat(currentItem === i ? 'active' : '', " ").concat(seenClass, "\">\n                                <b style=\"animation-duration:").concat(length === '' ? '3' : length, "s\"></b>\n                            </span>");
             // htmlItems += "<div data-time=\"".concat(get(item, 'time'), "\" data-type=\"").concat(get(item, 'type'), "\"").concat(commonAttrs, " class=\"item ").concat(seenClass, " ").concat(currentItem === i ? 'active' : '', "\">\n                            ").concat(option("arrowControl") ? '<div class="story-left" title="Previous Story">&#8592;</div>' : "", "\n                            ").concat(renderCallback(item, "\n                              ".concat(get(item, 'type') === 'video' ? "\n                                    <video class=\"media\" muted webkit-playsinline playsinline preload=\"auto\" src=\"".concat(get(item, 'src'), "\" ").concat(get(item, 'type'), "></video>\n                                    <b class=\"tip muted\">").concat(option('language', 'unmute'), "</b>\n                              ") : "\n                                    <img class=\"media\" src=\"".concat(get(item, 'src'), "\" ").concat(get(item, 'type'), ">\n                              "), "\n\n                              ").concat(get(item, 'link') ? "\n                                    <a class=\"tip link\" href=\"".concat(get(item, 'link'), "\" rel=\"noopener\" target=\"_blank\">\n                                      ").concat(!linkText || linkText === '' ? option('language', 'visitLink') : linkText, "\n                                    </a>\n                              ") : "\n                              ", "\n                            ")), "\n                            ").concat(option("arrowControl") ? '<div class="story-right" title="Next Story">&#8594;</div>' : "", "\n                          </div>");
-            link = encodeURIComponent(get(item, 'link'));
-            linkText = encodeURIComponent(get(item, 'linkText'));
+            // link = encodeURIComponent(get(item, 'link'));
+            // linkText = encodeURIComponent(get(item, 'linkText'));
             pointerItems += option('template', 'viewerItemPointer')(i, currentItem, item);
-            htmlItems += option('template', 'viewerItemBody')(i, currentItem, item, active, link, linkText);
+            htmlItems += option('template', 'viewerItemBody')(i, currentItem, item, active);
           });
 
           slides.innerHTML = htmlItems;
