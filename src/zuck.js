@@ -302,7 +302,6 @@
                         </div>
 
                         <div class="middle">
-                        
                             <a href="#" class="paused_story poppins-light"><i id="zuckfa" class="far fa-pause-circle fa-2x" aria-hidden="true"></i> <span class="text"> PAUSE</span></a>
                             <a href="#" class="play_story poppins-light" style="display:none";><i id="zuckfa" class="far fa-play-circle fa-2x" aria-hidden="true"></i> PLAY/a>
                         </div>
@@ -347,19 +346,18 @@
 
                     ${
                       get(item, 'link')
-                      ? `<a class="tip link" href="${link}" rel="noopener" target="_blank">
+                      ? `<a class="tip link" href="${get(item, 'link')}" rel="noopener" target="_blank">
                           ${!get(item, 'linkText') || get(item, 'linkText') === '' ? option('language', 'visitLink') : get(item, 'linkText')}
                         </a>
-                        <a class="tip read-more-btn-highlights inter-bold" href="${link}" rel="noopener" target="_blank">
+                        <a class="tip read-more-btn-highlights inter-bold" href="${get(item, 'link')}" rel="noopener" target="_blank">
                         READ MORE <i class="fas fa-arrow-right"></i>
                         </a>
                         <div class="list-inline">
-                          <div id="inputbro" style="display: none;">${link}</div>
                           <ul class="list-inline">
                             <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${linkText}%20%7C%20${link}" class="tip whatsapp poppins-medium" target="_blank"><i class="fab fa-whatsapp fa-2x"></i></a></li>
                             <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${linkText}%20%7C%20${link}" class="tip telegram poppins-medium" target="_blank"><i class="fa fa-paper-plane fa-2x"></i></a></li>
                             <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${link}" class="tip facebook poppins-medium" target="blank"><i class="fab fa-facebook-f fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a class="tip copy poppins-medium" id="copied">COPY LINK</a></li>
+                            <li class="list-inline-item"><a class="tip copy poppins-medium" id="copied" data-clipboard-text="${link}">COPY LINK</a></li>
                           </ul>
                         </div>`: ''
                     }`
@@ -678,18 +676,37 @@
 
           var copied = slides.querySelectorAll("#copied");
           var inputbro = slides.querySelectorAll("#inputbro");
+          var script = document.createElement('script');
+          script.src =  'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js';
+          document.getElementsByTagName("head")[0].appendChild(script);
 
-          each(slides.querySelectorAll("#copied"), (i, el) => {
-            el.onclick = e => {
-              var $tempInput = document.createElement('INPUT');
-              document.body.appendChild($tempInput);
-              $tempInput.setAttribute('value', inputbro[i].innerHTML);
-              $tempInput.select();
-              document.execCommand("copy");
-              document.body.removeChild($tempInput);
-              copied[i].innerHTML = "COPIED";
-            };
+          var clipboard = new Clipboard("#copied");
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.textContent = 'COPIED';
+            window.setTimeout(function() {
+              e.trigger.textContent = 'COPY LINK';
+            }, 2000);
           });
+
+          clipboard.on('error', function(e) {
+            e.trigger.textContent = 'COPY LINK';
+            window.setTimeout(function() {
+              e.trigger.textContent = 'COPY LINK';
+            }, 2000);
+          });
+
+          // each(slides.querySelectorAll("#copied"), (i, el) => {
+          //   el.onclick = e => {
+          //     var $tempInput = document.createElement('INPUT');
+          //     document.body.appendChild($tempInput);
+          //     $tempInput.setAttribute('value', inputbro[i].innerHTML);
+          //     $tempInput.select();
+          //     document.execCommand("copy");
+          //     document.body.removeChild($tempInput);
+          //     copied[i].innerHTML = "COPIED";
+          //   };
+          // });
 
           storyViewer.appendChild(slides);
 
@@ -1101,6 +1118,7 @@
         var post_type = story.getAttribute('post_type');
         var linkhref = story.getAttribute('link');
         var browse = story.getAttribute('browse');
+        var quizzes = story.getAttribute('quizzes');
         var seen = false;
 
         if (zuck.internalData['seenItems'][storyId]) {
@@ -1129,7 +1147,7 @@
           };
         }
 
-        if (browse =='yes' && (tag !=='' || post_type !=='')) {
+        if (browse =='yes' && (tag !=='' || post_type !=='' || quizzes=='yes')) {
           story.onclick = function (e) {
             e.preventDefault();
             window.open(linkhref, '_blank');
@@ -1305,6 +1323,7 @@
         story.setAttribute('post_type', get(data, 'post_type'));
         story.setAttribute('link', get(data, 'link'));
         story.setAttribute('browse', get(data, 'browse'));
+        story.setAttribute('quizzes', get(data, 'quizzes'));
         var preview = false;
 
         if (items[0]) {
@@ -1446,7 +1465,7 @@
               var scrollPos = 0;
               const mq = window.matchMedia( "(max-width: 480px)" );
               window.addEventListener('scroll', function(e) {
-                if (mq.matches) {
+                // if (mq.matches) {
                   if ((document.body.getBoundingClientRect()).top == scrollPos) 
                   {
                     document.querySelector(".story-prev").style.position = "fixed";
@@ -1465,13 +1484,13 @@
                     document.querySelector(".story-nexts").style.display = "none !important";
                   }
                   // scrollPos = (document.body.getBoundingClientRect()).top;
-                }
+                // }
               });
 
               var scrollPosStories = 0;
               var divx = document.querySelector("#main-menu-container");
               divx.addEventListener('scroll', function (e) {
-                if (mq.matches) {
+                // if (mq.matches) {
                   if (divx.scrollTop == scrollPosStories)
                   {
                     document.querySelector(".story-prevs").style.display = "inline";
@@ -1482,7 +1501,7 @@
                     document.querySelector(".story-nexts").style.display = "none";
                   }
                   // scrollPosStories = (divx.getBoundingClientRect()).top;
-                }
+                // }
               });
 
               // StoriesSlider.addEventListener('mousedown', function (e) {
@@ -1566,11 +1585,11 @@
         var nextPointer = nextItems[0];
         var nextItem = nextItems[1];
         
-        var j;
-        y = document.querySelectorAll("#copied");
-        for (j = 0; j < y.length; j++) { 
-          y[j].innerHTML = "COPY LINK";
-        };
+        // var j;
+        // y = document.querySelectorAll("#copied");
+        // for (j = 0; j < y.length; j++) { 
+        //   y[j].innerHTML = "COPY LINK";
+        // };
 
         if (storyViewer && nextPointer && nextItem) {
           
