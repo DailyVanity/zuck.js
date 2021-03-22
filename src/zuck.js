@@ -676,12 +676,13 @@
 
           var copied = slides.querySelectorAll("#copied");
           var inputbro = slides.querySelectorAll("#inputbro");
-          var script = document.createElement('script');
-          script.src =  'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js';
-          document.getElementsByTagName("head")[0].appendChild(script);
+          // var script = document.createElement('script');
+          // script.src =  'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js';
+          // document.getElementsByTagName("head")[0].appendChild(script);
 
-          var clipboard = new Clipboard("#copied");
+          var clipboard = new ClipboardJS("#copied");
           clipboard.on('success', function(e) {
+            //  console.log(e);
             e.clearSelection();
             e.trigger.textContent = 'COPIED';
             window.setTimeout(function() {
@@ -690,10 +691,33 @@
           });
 
           clipboard.on('error', function(e) {
-            e.trigger.textContent = 'COPY LINK';
+            //  console.log(e);
+            e.trigger.textContent = 'CTRL + C';
             window.setTimeout(function() {
               e.trigger.textContent = 'COPY LINK';
             }, 2000);
+          });
+
+          each(slides.querySelectorAll("#copied"), (i, el) => {
+            el.onclick = e => {
+              var clipboard = new ClipboardJS("#copied");
+              clipboard.on('success', function(e) {
+                console.log("successs");
+                e.clearSelection();
+                e.trigger.textContent = 'COPIED';
+                window.setTimeout(function() {
+                  e.trigger.textContent = 'COPY LINK';
+                }, 2000);
+              });
+
+              clipboard.on('error', function(e) {
+                console.log("failed");
+                e.trigger.textContent = 'CTRL + C';
+                window.setTimeout(function() {
+                  e.trigger.textContent = 'COPY LINK';
+                }, 2000);
+              });
+            };
           });
 
           // each(slides.querySelectorAll("#copied"), (i, el) => {
