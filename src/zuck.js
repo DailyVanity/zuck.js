@@ -274,6 +274,7 @@
               data-time="${get(itemData, 'time')}"
               data-type="${get(itemData, 'type')}"
               data-length="${get(itemData, 'length')}"
+              data-item-id="${get(itemData, 'id')}"
             `;
 
             for (const dataKey in itemData) {
@@ -326,7 +327,24 @@
           },
 
           viewerItemBody (index, currentIndex, item, active) {
+            var protocol = window.location.protocol;
+            var hostname = window.location.hostname;
             return `<div class="storyline"></div>
+                    <div class="modal copy" id="mymodal${get(item, 'id')}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                    <div class="modal-dialog copy text-justify" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="at-expanded-menu-close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                          <span id="at-expanded-menu-title" class="at-expanded-menu-title">Copy Link</span>
+                          <span class="at-expanded-menu-page-title">${get(item, 'linkText')}</span>
+                          <span class="at-expanded-menu-page-url">${get(item, 'link')}</span>
+                        </div>
+                        <div id="at-expanded-menu-bd" class="at-expanded-menu-bd">	
+                          <iframe src="${protocol}//${hostname}/wp-content/themes/dailyvanity-child/copylink.php?link=${get(item, 'link')}" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe>  
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <div
                   data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}"
                   class="item ${get(item, 'seen') === true ? 'seen' : ''} ${currentIndex === index ? 'active' : ''}">
@@ -353,13 +371,16 @@
                         READ MORE <i class="fas fa-arrow-right"></i>
                         </a>
                         <div class="list-inline">
+                          <input type="hidden" id="linktext" value="${get(item, 'linkText')}">
+                          <input type="hidden" id="link" value="${get(item, 'link')}">
                           <ul class="list-inline">
                             <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'linkText')}%20%7C%20${get(item, 'link')}" class="tip whatsapp poppins-medium" target="_blank"><i class="fab fa-whatsapp fa-2x"></i></a></li>
                             <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'linkText')}%20%7C%20${get(item, 'link')}" class="tip telegram poppins-medium" target="_blank"><i class="fa fa-paper-plane fa-2x"></i></a></li>
                             <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${get(item, 'link')}" class="tip facebook poppins-medium" target="blank"><i class="fab fa-facebook-f fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a class="tip copy poppins-medium" id="copied" data-clipboard-text="${get(item, 'link')}">COPY LINK</a></li>
+                            <li class="list-inline-item"><a href="#" id="copied" class="tip copy poppins-medium" data-toggle="modal" data-target="#mymodal${get(item, 'id')}" data-whatever="${get(item, 'id')}"><i class="fa fa-link fa-2x"></i></a></li>
                           </ul>
-                        </div>`: ''
+                        </div>
+                       `: ''
                     }`
                   }
                 </div>`;
@@ -563,6 +584,7 @@
             return false;
           }
 
+          // alert(JSON.stringify(get(storyData, 'items')));
           slides.className = 'slides';
           each(get(storyData, 'items'), function (i, item) {
             if (currentItem > i) {
@@ -675,62 +697,22 @@
           });
 
           var copied = slides.querySelectorAll("#copied");
-          var inputbro = slides.querySelectorAll("#inputbro");
-          // var script = document.createElement('script');
-          // script.src =  'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js';
-          // document.getElementsByTagName("head")[0].appendChild(script);
-
-          var clipboard = new ClipboardJS("#copied");
-          clipboard.on('success', function(e) {
-            //  console.log(e);
-            e.clearSelection();
-            e.trigger.textContent = 'COPIED';
-            window.setTimeout(function() {
-              e.trigger.textContent = 'COPY LINK';
-            }, 2000);
-          });
-
-          clipboard.on('error', function(e) {
-            //  console.log(e);
-            e.trigger.textContent = 'CTRL + C';
-            window.setTimeout(function() {
-              e.trigger.textContent = 'COPY LINK';
-            }, 2000);
-          });
+          var linktext = slides.querySelectorAll("#linktext");
+          var link = slides.querySelectorAll("#link");
+          var content = slides.querySelectorAll("#at-expanded-menu-bd");
 
           each(slides.querySelectorAll("#copied"), (i, el) => {
             el.onclick = e => {
-              var clipboard = new ClipboardJS("#copied");
-              clipboard.on('success', function(e) {
-                console.log("successs");
-                e.clearSelection();
-                e.trigger.textContent = 'COPIED';
-                window.setTimeout(function() {
-                  e.trigger.textContent = 'COPY LINK';
-                }, 2000);
-              });
-
-              clipboard.on('error', function(e) {
-                console.log("failed");
-                e.trigger.textContent = 'CTRL + C';
-                window.setTimeout(function() {
-                  e.trigger.textContent = 'COPY LINK';
-                }, 2000);
+              storyViewer.classList.add('paused');
+              storyViewer.querySelector(".paused_story").style.display = "none";
+              storyViewer.querySelector(".play_story").style.display = "inline-block";
+              storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
+              slides.querySelectorAll("myModal")[i].modal({
+                  backdrop: 'static',
+                  keyboard: false
               });
             };
           });
-
-          // each(slides.querySelectorAll("#copied"), (i, el) => {
-          //   el.onclick = e => {
-          //     var $tempInput = document.createElement('INPUT');
-          //     document.body.appendChild($tempInput);
-          //     $tempInput.setAttribute('value', inputbro[i].innerHTML);
-          //     $tempInput.select();
-          //     document.execCommand("copy");
-          //     document.body.removeChild($tempInput);
-          //     copied[i].innerHTML = "COPIED";
-          //   };
-          // });
 
           storyViewer.appendChild(slides);
 
@@ -1124,6 +1106,7 @@
           var a = firstElementChild;
           var img = a.firstElementChild;
           items.push({
+            id: a.getAttribute('data-item-id'),
             src: a.getAttribute('href'),
             length: a.getAttribute('data-length'),
             type: a.getAttribute('data-type'),
@@ -1574,7 +1557,7 @@
         var li = d.createElement('li');
         li.className = get(data, 'seen') ? 'seen' : '';
         li.setAttribute('data-id', get(data, 'id'));
-        li.innerHTML = "<a href=\"".concat(get(data, 'src'), "\" data-link=\"").concat(get(data, 'link'), "\" data-linkText=\"").concat(get(data, 'linkText'), "\" data-time=\"").concat(get(data, 'time'), "\" data-type=\"").concat(get(data, 'type'), "\" data-length=\"").concat(get(data, 'length'), "\"><img src=\"").concat(get(data, 'preview'), "\"></a>");
+        li.innerHTML = "<a href=\"".concat(get(data, 'src'), "\" data-item-id=\"").concat(get(data, 'id'), "\" data-link=\"").concat(get(data, 'link'), "\" data-linkText=\"").concat(get(data, 'linkText'), "\" data-time=\"").concat(get(data, 'time'), "\" data-type=\"").concat(get(data, 'type'), "\" data-length=\"").concat(get(data, 'length'), "\"><img src=\"").concat(get(data, 'preview'), "\"></a>");
         var el = story.querySelectorAll('.items')[0];
 
         if (append) {
