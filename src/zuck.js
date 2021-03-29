@@ -1490,7 +1490,6 @@
                     document.querySelector(".story-prevs").style.display = "none !important";
                     document.querySelector(".story-nexts").style.display = "none !important";
                   }
-                  // scrollPos = (document.body.getBoundingClientRect()).top;
                 }
               });
 
@@ -1507,7 +1506,6 @@
                     document.querySelector(".story-prevs").style.display = "none";
                     document.querySelector(".story-nexts").style.display = "none";
                   }
-                  // scrollPosStories = (divx.getBoundingClientRect()).top;
                 }
               });
 
