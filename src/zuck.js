@@ -254,7 +254,7 @@
                       (option('avatars') || !get(itemData, 'currentPreview'))
                       ? get(itemData, 'photo')
                       : get(itemData, 'currentPreview')
-                    }" />
+                    }" alt="${get(itemData, 'name')}" />
                   </span>`:`<span class="item-preview" style="display: none"></span>`}
                   <span class="info" itemProp="author" itemScope itemType="http://schema.org/Person">
                     <strong class="name poppins-semibold" itemProp="name">${get(itemData, 'name')}</strong>
@@ -347,7 +347,7 @@
                       get(item, 'type') === 'video'
                       ? `<video class="media" muted webkit-playsinline playsinline preload="auto" src="${get(item, 'src')}" ${get(item, 'type')}></video>
                         <b class="tip muted">${option('language', 'unmute')}</b>`
-                      : `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} />`
+                      : `<img loading="auto" class="media" alt="${get(item, 'linkText')}" src="${get(item, 'src')}" ${get(item, 'type')}/>`
                     }
 
                     ${
