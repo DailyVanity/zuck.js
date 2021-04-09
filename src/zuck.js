@@ -254,7 +254,7 @@
                       (option('avatars') || !get(itemData, 'currentPreview'))
                       ? get(itemData, 'photo')
                       : get(itemData, 'currentPreview')
-                    }" />
+                    }" alt="${get(itemData, 'name')}" />
                   </span>`:`<span class="item-preview" style="display: none"></span>`}
                   <span class="info" itemProp="author" itemScope itemType="http://schema.org/Person">
                     <strong class="name poppins-semibold" itemProp="name">${get(itemData, 'name')}</strong>
@@ -315,7 +315,8 @@
                       <div class="slides-pointers">
                         <div class="wrap"></div>
                       </div>
-                    </div>`;
+                    </div>
+                   `;
           },
 
           viewerItemPointer (index, currentIndex, item) {
@@ -329,37 +330,24 @@
           viewerItemBody (index, currentIndex, item, active) {
             var protocol = window.location.protocol;
             var hostname = window.location.hostname;
-            return `<div class="storyline"></div>
-                    <div class="modal copy" id="mymodal${get(item, 'id')}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
-                    <div class="modal-dialog copy text-justify" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button type="button" class="at-expanded-menu-close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                          <span id="at-expanded-menu-title" class="at-expanded-menu-title">Copy Link</span>
-                          <span class="at-expanded-menu-page-title">${get(item, 'linkText')}</span>
-                          <span class="at-expanded-menu-page-url">${get(item, 'link')}</span>
-                        </div>
-                        <div id="at-expanded-menu-bd" class="at-expanded-menu-bd">	
-                          <iframe src="${protocol}//${hostname}/wp-content/themes/dailyvanity-child/copylink.php?link=${get(item, 'link')}" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe>  
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                  data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}"
-                  class="item ${get(item, 'seen') === true ? 'seen' : ''} ${currentIndex === index ? 'active' : ''}">
-                  
+            return `
+                    <div
+                    data-time="${get(item, 'time')}" data-type="${get(item, 'type')}" data-index="${index}" data-item-id="${get(item, 'id')}"
+                    class="item ${get(item, 'seen') === true ? 'seen' : ''} ${currentIndex === index ? 'active' : ''}">
+                   
+                    
                   ${option("arrowControl")?`<div class="story-left" style="background-image: url(/wp-content/themes/dailyvanity-child/src/images/left_button.png);"></div>`:''}
                   ${option("arrowControl")?`<div class="story-right" style="background-image: url(/wp-content/themes/dailyvanity-child/src/images/right_button.png);"></div>`:''}
                   
                   ${get(item, 'linkText') === 'View All' ?
                     `<div class="storylinefull" style="background-image: url(${get(item, 'src')});"><a href="${get(item, 'link')}" target="_blank"><span class="linkSpanner"></span></a></div>`
                   :
-                    `${
+                    `
+                    ${
                       get(item, 'type') === 'video'
                       ? `<video class="media" muted webkit-playsinline playsinline preload="auto" src="${get(item, 'src')}" ${get(item, 'type')}></video>
                         <b class="tip muted">${option('language', 'unmute')}</b>`
-                      : `<img loading="auto" class="media" src="${get(item, 'src')}" ${get(item, 'type')} />`
+                      : `<img loading="auto" class="media" alt="${get(item, 'linkText')}" src="${get(item, 'src')}" ${get(item, 'type')}/>`
                     }
 
                     ${
@@ -384,6 +372,28 @@
                     }`
                   }
                 </div>`;
+            },
+
+          viewerModal (index, currentIndex, item, active) {
+            var protocol = window.location.protocol;
+            var hostname = window.location.hostname;
+            return `
+              <div class="modal copy" id="mymodal${get(item, 'id')}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
+                <div class="modal-dialog copy text-justify" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="at-expanded-menu-close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                      <span id="at-expanded-menu-title" class="at-expanded-menu-title">Copy Link</span>
+                      <span class="at-expanded-menu-page-title">${get(item, 'linkText')}</span>
+                      <span class="at-expanded-menu-page-url">${get(item, 'link')}</span>
+                    </div>
+                    <div id="at-expanded-menu-bd" class="at-expanded-menu-bd">	
+                      <iframe src="${protocol}//${hostname}/wp-content/themes/dailyvanity-child/copylink.php?link=${get(item, 'link')}" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe>  
+                    </div>
+                  </div>
+                </div>
+              </div>
+                `;
           }
         },
         language: {
@@ -574,8 +584,10 @@
           var modalSlider = query("#zuck-modal-slider-".concat(id));
           var htmlItems = '';
           var pointerItems = '';
+          var modalCopy = '';
           var storyId = get(storyData, 'id');
           var slides = d.createElement('div');
+          var moco = d.createElement('div');
           var currentItem = get(storyData, 'currentItem') || 0;
           var exists = query("#zuck-modal .story-viewer[data-story-id=\"".concat(storyId, "\"]"));
           var currentItemTime = '';
@@ -586,6 +598,7 @@
 
           // alert(JSON.stringify(get(storyData, 'items')));
           slides.className = 'slides';
+          moco.className = 'moco';
           each(get(storyData, 'items'), function (i, item) {
             if (currentItem > i) {
               storyData['items'][i]['seen'] = true;
@@ -613,10 +626,11 @@
             // linkText = encodeURIComponent(get(item, 'linkText'));
             pointerItems += option('template', 'viewerItemPointer')(i, currentItem, item);
             htmlItems += option('template', 'viewerItemBody')(i, currentItem, item, active);
+            modalCopy += option('template', 'viewerModal')(i, currentItem, item, active);
           });
 
           slides.innerHTML = htmlItems;
-           
+          moco.innerHTML = modalCopy;
           // var video = slides.querySelector('video');
 
           // var addMuted = function addMuted(video) {
@@ -662,6 +676,15 @@
           storyViewer.setAttribute('data-story-id', storyId);
           // var html = "<div class=\"head\"><div class=\"left\">".concat(option('backButton') ? '<a class="back">&lsaquo;</a>' : '', "<u class=\"img\" style=\"background-image:url(").concat(get(storyData, 'photo'), ");\"></u><div><strong>").concat(get(storyData, 'name'), "</strong><span class=\"time\">").concat(currentItemTime, "</span></div></div><div class=\"right\"><span class=\"time\">").concat(currentItemTime, "</span><span class=\"loading\"></span><a class=\"close\" tabIndex=\"2\">&times;</a></div></div><div class=\"slides-pointers\"><div>").concat(pointerItems, "</div></div>");
           // storyViewer.innerHTML = html;
+          storyViewer.appendChild(slides);
+          // alert(storyViewer.innerHTML + slides);
+
+          var existingDiv = storyViewer.querySelector(".header");
+          var newDiv = "<div class='storyline'>";
+
+          var storyViewerhtml = storyViewer.innerHTML;
+          storyViewer.innerHTML = modalCopy + newDiv + storyViewerhtml;
+
           storyViewer.querySelector('.slides-pointers .wrap').innerHTML = pointerItems;
           each(storyViewer.querySelectorAll('.close, .back'), function (i, el) {
             el.onclick = function (e) {
@@ -675,7 +698,7 @@
               e.preventDefault();
 
               storyViewer.classList.add("paused");
-              // alert("pausedclick");
+
               storyViewer.querySelector(".paused_story").style.display = "none";
               storyViewer.querySelector(".play_story").style.display = "inline-block";
               storyViewer.querySelector(".play_story").innerHTML = "<i id='zuckfa' class='far fa-play-circle fa-2x' aria-hidden='true'></i> PLAY";
@@ -688,7 +711,6 @@
               e.preventDefault();
 
               storyViewer.classList.remove("paused");
-              //  alert("playlick");
               storyViewer.querySelector(".paused_story").style.display = "inline-block";
               storyViewer.querySelector(".play_story").style.display = "none";
               storyViewer.querySelector(".paused_story").innerHTML = "<i id='zuckfa' class='far fa-pause-circle fa-2x' aria-hidden='true'></i> PAUSE";
@@ -714,7 +736,20 @@
             };
           });
 
-          storyViewer.appendChild(slides);
+          // storyViewer.removeChild(tdElement);
+          // storyViewerhtml.prepend(newDiv);
+          // slidesss=storyViewer.querySelector(".slides");
+          // slidesss.insertAdjacentHTML( 'beforeend', "</div>" );
+ 
+          // alert(storyViewerhtml)
+
+          // existingDiv.replaceChild(newDiv, existingDiv);
+          // newDiv.html(existingDiv);
+          // testH1.after(newDiv);
+
+          // storyViewerWrap.appendChild(storyline);
+
+
 
           // if (className === 'viewing') {
           //   playVideoItem(storyViewer.querySelectorAll("[data-index=\"".concat(currentItem, "\"].active")), false);
