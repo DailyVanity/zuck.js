@@ -340,7 +340,7 @@
                   ${option("arrowControl")?`<div class="story-right" style="background-image: url(/wp-content/themes/dailyvanity-child/src/images/right_button.png);"></div>`:''}
                   
                   ${get(item, 'linkText') === 'View All' ?
-                    `<div class="storylinefull" style="background-image: url(${get(item, 'src')});"><a href="${get(item, 'link')}" target="_blank"><span class="linkSpanner"></span></a></div>`
+                    `<div class="storylinefull" style="background-image: url(${get(item, 'src')});"><a href="${get(item, 'link')}" target="_blank" rel="noopener noreferrer"><span class="linkSpanner"></span></a></div>`
                   :
                     `
                     ${
@@ -362,9 +362,9 @@
                           <input type="hidden" id="linktext" value="${get(item, 'linkText')}">
                           <input type="hidden" id="link" value="${get(item, 'link')}">
                           <ul class="list-inline">
-                            <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'linkText')}%20%7C%20${get(item, 'link')}" class="tip whatsapp poppins-medium" target="_blank"><i class="fab fa-whatsapp fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'linkText')}%20%7C%20${get(item, 'link')}" class="tip telegram poppins-medium" target="_blank"><i class="fa fa-paper-plane fa-2x"></i></a></li>
-                            <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${get(item, 'link')}" class="tip facebook poppins-medium" target="blank"><i class="fab fa-facebook-f fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a href="https://api.whatsapp.com/send?text=${get(item, 'linkText')}%20%7C%20${get(item, 'link')}" class="tip whatsapp poppins-medium" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a href="https://telegram.me/share/url?url=${get(item, 'linkText')}%20%7C%20${get(item, 'link')}" class="tip telegram poppins-medium" target="_blank" rel="noopener noreferrer"><i class="fa fa-paper-plane fa-2x"></i></a></li>
+                            <li class="list-inline-item"><a href="https://www.facebook.com/sharer/sharer.php?u=${get(item, 'link')}" class="tip facebook poppins-medium" target="blank" rel="noopener noreferrer"><i class="fab fa-facebook-f fa-2x"></i></a></li>
                             <li class="list-inline-item"><a href="#" id="copied" class="tip copy poppins-medium" data-toggle="modal" data-target="#mymodal${get(item, 'id')}" data-whatever="${get(item, 'id')}"><i class="fa fa-link fa-2x"></i></a></li>
                           </ul>
                         </div>
@@ -388,7 +388,7 @@
                       <span class="at-expanded-menu-page-url">${get(item, 'link')}</span>
                     </div>
                     <div id="at-expanded-menu-bd" class="at-expanded-menu-bd">	
-                      <iframe src="${protocol}//${hostname}/wp-content/themes/dailyvanity-child/copylink.php?link=${get(item, 'link')}" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe>  
+                      <iframe title="${get(item, 'linkText')}" src="${protocol}//${hostname}/wp-content/themes/dailyvanity-child/copylink.php?link=${get(item, 'link')}" width="100%" height="100%" frameborder="0" allowtransparency="true"></iframe>  
                     </div>
                   </div>
                 </div>
