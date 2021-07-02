@@ -1161,6 +1161,7 @@
         var linkhref = story.getAttribute('link');
         var browse = story.getAttribute('browse');
         var quizzes = story.getAttribute('quizzes');
+        var beautyreviews = story.getAttribute('beautyreviews');
         var seen = false;
 
         if (zuck.internalData['seenItems'][storyId]) {
@@ -1189,7 +1190,7 @@
           };
         }
 
-        if (browse =='yes' && (tag !=='' || post_type !=='' || quizzes=='yes')) {
+        if (browse =='yes' && (tag !=='' || post_type !=='' || quizzes=='yes' || beautyreviews=='yes')) {
           story.onclick = function (e) {
             e.preventDefault();
             window.open(linkhref, '_blank');
@@ -1366,6 +1367,7 @@
         story.setAttribute('link', get(data, 'link'));
         story.setAttribute('browse', get(data, 'browse'));
         story.setAttribute('quizzes', get(data, 'quizzes'));
+        story.setAttribute('beautyreviews', get(data, 'beautyreviews'));
         var preview = false;
 
         if (items[0]) {
